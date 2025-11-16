@@ -218,8 +218,29 @@ function Header() {
               </button>
             ))}
             <button 
-              onClick={() => scrollToSection("contact")}
-              className="cursor-pointer border border-[#4DD7FA] rounded-md px-4 py-2 focus:outline-none transition-all duration-300 bg-transparent text-zinc-200 hover:bg-[rgba(6,12,18,0.55)] hover:backdrop-blur-md hover:shadow-[inset_0_0_10px_1px_rgba(77,215,250,0.55)] hover:border-[#4DD7FA]/80 hover:text-zinc-300 focus:bg-[#4DD7FA]/10 focus:shadow-[inset_0_0_7px_1px_rgba(77,215,250,0.55)] focus:text-white"
+              onClick={(e) => {
+                ;(e.currentTarget as HTMLButtonElement).blur()
+                lockActiveRef.current = true
+                if (settleTimerRef.current) {
+                  window.clearTimeout(settleTimerRef.current)
+                }
+                const target = document.getElementById("contact")
+                if (target) {
+                  const currentY = window.scrollY
+                  const targetTop = target.getBoundingClientRect().top + currentY
+                  setScrollDirection(targetTop > currentY ? "down" : "up")
+                }
+                setActiveSection("contact")
+                scrollToSection("contact")
+                settleTimerRef.current = window.setTimeout(() => {
+                  lockActiveRef.current = false
+                }, 400)
+              }}
+              className={`cursor-pointer border rounded-md px-4 py-2 focus:outline-none transition-all duration-300 focus:bg-[#4DD7FA]/10 focus:shadow-[inset_0_0_7px_1px_rgba(77,215,250,0.55)] focus:text-white ${
+                activeSection === "contact"
+                  ? "border-[#4DD7FA] bg-[rgba(6,12,18,0.55)] backdrop-blur-md shadow-[inset_0_0_10px_1px_rgba(77,215,250,0.55)] text-zinc-300"
+                  : "border-[#4DD7FA] bg-transparent text-zinc-200 hover:bg-[rgba(6,12,18,0.55)] hover:backdrop-blur-md hover:shadow-[inset_0_0_10px_1px_rgba(77,215,250,0.55)] hover:border-[#4DD7FA]/80 hover:text-zinc-300"
+              }`}
             >
               Contact me
             </button>
