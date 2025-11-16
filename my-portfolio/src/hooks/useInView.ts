@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState, MutableRefObject } from "react"
+import { useEffect, useRef, useState } from "react"
+import type { RefObject } from "react"
 
 type UseInViewOptions = {
   root?: Element | null
@@ -9,7 +10,7 @@ type UseInViewOptions = {
 
 export function useInView<T extends Element>(
   options: UseInViewOptions = {}
-): { ref: MutableRefObject<T | null>; inView: boolean } {
+): { ref: RefObject<T | null>; inView: boolean } {
   const { root = null, rootMargin = "0px", threshold = 0.15, once = true } = options
   const ref = useRef<T | null>(null)
   const [inView, setInView] = useState(false)
