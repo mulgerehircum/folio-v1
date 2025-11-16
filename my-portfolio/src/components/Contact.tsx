@@ -1,10 +1,20 @@
+import { useEffect, useRef } from "react"
 import { useInView } from "../hooks/useInView"
 import ContactItem from "./ContactItem"
 import { contactInfo } from "../data/contact"
 import Section from "./Section"
+import { trackSectionView } from "../utils/analytics"
 
 function Contact() {
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.18, once: false })
+  const hasTrackedRef = useRef(false)
+
+  useEffect(() => {
+    if (inView && !hasTrackedRef.current) {
+      trackSectionView("contact")
+      hasTrackedRef.current = true
+    }
+  }, [inView])
 
   return (
     <Section id="contact">

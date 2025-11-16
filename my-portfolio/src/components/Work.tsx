@@ -1,11 +1,21 @@
+import { useEffect, useRef } from "react"
 import { useInView } from "../hooks/useInView"
 import { Calendar, MapPin } from "lucide-react"
 import SectionHeader from "./SectionHeader"
 import { workExperience } from "../data/work"
 import Section from "./Section"
+import { trackSectionView } from "../utils/analytics"
 
 function Work() {
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.18, once: false })
+  const hasTrackedRef = useRef(false)
+
+  useEffect(() => {
+    if (inView && !hasTrackedRef.current) {
+      trackSectionView("work")
+      hasTrackedRef.current = true
+    }
+  }, [inView])
 
   return (
     <Section id="work" className="bg-transparent min-h-screen">

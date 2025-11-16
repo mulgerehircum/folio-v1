@@ -1,16 +1,35 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { trackCVDownload, trackSectionView } from "../utils/analytics"
+import { useInView } from "../hooks/useInView"
 
 function Hero() {
   const [isVisible, setIsVisible] = useState(false)
   const name = "Andrii Ponomarienko"
+  const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.18, once: false })
+  const hasTrackedRef = useRef(false)
 
   useEffect(() => {
     const timeoutId = setTimeout(() => setIsVisible(true), 100)
     return () => clearTimeout(timeoutId)
   }, [])
 
+  useEffect(() => {
+    if (inView && !hasTrackedRef.current) {
+      trackSectionView("about")
+      hasTrackedRef.current = true
+    }
+  }, [inView])
+
+  const handleDownloadCV = () => {
+    const link = document.createElement("a")
+    link.href = "/CV.pdf"
+    link.download = "Andrii_Ponomarienko_CV.pdf"
+    link.click()
+    trackCVDownload()
+  }
+
   return (
-    <div className="relative flex flex-col items-center gap-4 z-10 w-full py-6">
+    <div ref={ref} className="relative flex flex-col items-center gap-4 z-10 w-full py-6">
       <span className={`block text-[11px] md:text-xs tracking-[0.3em] text-zinc-300 mb-3 transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-0"}`}>
         HI, I'M
       </span>
@@ -31,12 +50,7 @@ function Hero() {
         CLEAR UX AND PERFORMANCE.
       </p>
       <button
-        onClick={() => {
-          const link = document.createElement("a")
-          link.href = "/CV.pdf"
-          link.download = "Andrii_Ponomarienko_CV.pdf"
-          link.click()
-        }}
+        onClick={handleDownloadCV}
         className={`cursor-pointer border border-[#4DD7FA] rounded-md px-4 py-2 focus:outline-none transition-all duration-700 ease-out bg-transparent text-zinc-200 hover:bg-[rgba(6,12,18,0.55)] hover:backdrop-blur-md hover:shadow-[inset_0_0_10px_1px_rgba(77,215,250,0.55)] hover:border-[#4DD7FA]/80 hover:text-zinc-300 focus:bg-[#4DD7FA]/10 focus:shadow-[inset_0_0_7px_1px_rgba(77,215,250,0.55)] focus:text-white ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-750"} mt-4`}      >
         Download CV
       </button>

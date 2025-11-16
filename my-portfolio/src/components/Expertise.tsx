@@ -1,11 +1,21 @@
+import { useEffect, useRef } from "react"
 import { useInView } from "../hooks/useInView"
 import SectionHeader from "./SectionHeader"
 import ExpertiseCard from "./ExpertiseCard"
 import { expertiseItems } from "../data/expertise"
 import Section from "./Section"
+import { trackSectionView } from "../utils/analytics"
 
 function Expertise() {
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.18, once: false })
+  const hasTrackedRef = useRef(false)
+
+  useEffect(() => {
+    if (inView && !hasTrackedRef.current) {
+      trackSectionView("expertise")
+      hasTrackedRef.current = true
+    }
+  }, [inView])
 
   return (
     <Section id="expertise" className="bg-transparent">

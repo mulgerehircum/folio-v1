@@ -1,3 +1,5 @@
+import { trackContactClick } from "../utils/analytics"
+
 interface ContactItemProps {
   label: string
   value: string
@@ -6,6 +8,11 @@ interface ContactItemProps {
 }
 
 function ContactItem({ label, value, href }: ContactItemProps) {
+  const handleClick = () => {
+    const platform = label.toLowerCase().replace(/\s+/g, "_")
+    trackContactClick(platform)
+  }
+
   return (
     <>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1">
@@ -16,6 +23,7 @@ function ContactItem({ label, value, href }: ContactItemProps) {
           href={href}
           target={href.startsWith("http") ? "_blank" : undefined}
           rel={href.startsWith("http") ? "noreferrer" : undefined}
+          onClick={handleClick}
           className="text-zinc-100 hover:text-amber-300 transition-colors"
         >
           {value}
