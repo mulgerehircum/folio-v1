@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import { trackCVDownload, trackSectionView } from "../utils/analytics"
 import { useInView } from "../hooks/useInView"
+import Button from "./Button"
 
 function Hero() {
   const [isVisible, setIsVisible] = useState(false)
@@ -49,11 +50,12 @@ function Hero() {
         FRONTEND DEVELOPER FOCUSED ON SCALABLE ARCHITECTURE, CLEAN STRUCTURE,
         CLEAR UX AND PERFORMANCE.
       </p>
-      <button
+      <Button
         onClick={handleDownloadCV}
-        className={`cursor-pointer border border-[#4DD7FA] rounded-md px-4 py-2 focus:outline-none transition-all duration-700 ease-out bg-transparent text-zinc-200 hover:bg-[rgba(6,12,18,0.55)] hover:backdrop-blur-md hover:shadow-[inset_0_0_10px_1px_rgba(77,215,250,0.55)] hover:border-[#4DD7FA]/80 hover:text-zinc-300 focus:bg-[#4DD7FA]/10 focus:shadow-[inset_0_0_7px_1px_rgba(77,215,250,0.55)] focus:text-white ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-750"} mt-4`}      >
+        className={`duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-750"} mt-4`}
+      >
         Download CV
-      </button>
+      </Button>
     </div>
   )
 }
