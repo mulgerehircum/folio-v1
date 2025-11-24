@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://andriiponomarenko.vercel.app/sitemap.xml
+
