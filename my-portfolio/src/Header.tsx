@@ -21,7 +21,7 @@ function Header() {
     const computeLayout = () => {
       const headerEl = document.querySelector("header") as HTMLElement | null
       headerHeightRef.current = headerEl?.offsetHeight ?? 0
-      const ids = ["about", "expertise", "work", "contact"]
+      const ids = ["about", "expertise", "work", "projects", "contact"]
       const currentScroll = window.scrollY
       sectionBoundsRef.current = ids
         .map(id => {
@@ -94,7 +94,7 @@ function Header() {
     }
   }, [])
   useEffect(() => {
-    const sectionIds = ["about", "expertise", "work", "contact"]
+    const sectionIds = ["about", "expertise", "work", "projects", "contact"]
     // header height is read from headerHeightRef computed in layout effect
 
     const observer = new IntersectionObserver(
@@ -173,6 +173,7 @@ function Header() {
               { id: "about", label: "About" },
               { id: "expertise", label: "Expertise" },
               { id: "work", label: "Work" },
+              { id: "projects", label: "Projects" },
             ].map(item => (
               <button
                 key={item.id}

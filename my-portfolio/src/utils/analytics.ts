@@ -67,3 +67,27 @@ export function trackCVDownload(): void {
     });
 }
 
+/**
+ * Track project link click
+ * @param projectTitle - Title of the project
+ * @param linkType - Type of link ("github" or "live")
+ */
+export function trackProjectLinkClick(projectTitle: string, linkType: "github" | "live"): void {
+    trackEvent("project_link_click", {
+        project_title: projectTitle,
+        link_type: linkType,
+        timestamp: new Date(),
+    });
+}
+
+/**
+ * Track project filter usage
+ * @param tech - Technology name that was filtered
+ */
+export function trackProjectFilter(tech: string): void {
+    trackEvent("project_filter", {
+        tech: tech,
+        timestamp: new Date(),
+    });
+}
+

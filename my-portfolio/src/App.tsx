@@ -3,6 +3,7 @@ import Background from "./components/Background"
 import Hero from "./components/Hero"
 import Expertise from "./components/Expertise"
 import Work from "./components/Work"
+import Projects from "./components/Projects"
 import Contact from "./components/Contact"
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         </div>
         <Expertise />
         <Work />
+        <Projects />
         <Contact />
       </div>
     </>
