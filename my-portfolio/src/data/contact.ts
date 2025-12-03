@@ -20,5 +20,10 @@ export const contactInfo: ContactItem[] = [
     value: "github.com/mulgerehircum",
     href: "https://github.com/mulgerehircum",
   },
+  {
+    label: "Fiverr",
+    value: "fiverr.com/s/jja64EZ",
+    href: "http://www.fiverr.com/s/jja64EZ",
+  },
 ]
 
