@@ -132,5 +132,13 @@ export const projects: Project[] = [
         githubUrl: "https://github.com/mulgerehircum/winery-landing",
         liveUrl: "https://noire-winery-landing-v1.vercel.app/",
     },
+    {
+        title: "Ukraine War Map",
+        description: "An interactive map visualizing military activity in Ukraine, featuring timeline-based event filtering, choropleth data layers, and 3D landmark rendering.",
+        techStack: ["Vue 3", "TypeScript", "MapLibre GL", "Three.js", "Vite"],
+        videoUrl: "https://youtu.be/dnzZCy_sREk",
+        githubUrl: "https://github.com/mulgerehircum/ukraine-warmap",
+        liveUrl: "https://project-map-ruddy.vercel.app",
+    },
 ]
 
