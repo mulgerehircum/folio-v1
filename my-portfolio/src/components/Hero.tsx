@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { trackCVDownload, trackSectionView } from "../utils/analytics"
 import { useInView } from "../hooks/useInView"
 import Button from "./Button"
+import TriangleMesh from "./TriangleMesh"
 
 function Hero() {
   const [isVisible, setIsVisible] = useState(false)
@@ -30,32 +31,35 @@ function Hero() {
   }
 
   return (
-    <div ref={ref} className="relative flex flex-col items-center gap-4 z-10 w-full py-6">
-      <span className={`block text-[11px] md:text-xs tracking-[0.3em] text-zinc-300 mb-3 transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-0"}`}>
-        HI, I'M
-      </span>
-      <div className={`w-40 h-px bg-cyan-400/40 mx-auto transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-150"}`} />
-      <h1 className={`text-4xl md:text-6xl font-bold text-center transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-350"}`}>
-        {Array.from(name).map((ch, idx) => (
-          <span
-            key={idx}
-            className={`inline-block transition-all duration-500 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[6px]"}`}
-            style={{ transitionDelay: `${idx * 6}ms` }}
-          >
-            {ch === " " ? "\u00A0" : ch}
-          </span>
-        ))}
-      </h1>
-      <p className={`mt-3 text-[11px] md:text-sm tracking-[0.25em] text-zinc-300 text-center max-w-3xl mx-auto transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-550"}`}>
-        FRONTEND DEVELOPER FOCUSED ON SCALABLE ARCHITECTURE, CLEAN STRUCTURE,
-        CLEAR UX AND PERFORMANCE.
-      </p>
-      <Button
-        onClick={handleDownloadCV}
-        className={`duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-750"} mt-4`}
-      >
-        Download CV
-      </Button>
+    <div ref={ref} className="relative flex flex-col items-center w-full min-h-[calc(100vh-64px)] justify-center overflow-hidden z-10">
+      <TriangleMesh />
+      <div className="relative z-10 flex flex-col items-center gap-4 w-full py-6 pointer-events-none">
+        <span className={`block text-[11px] md:text-xs tracking-[0.3em] text-zinc-300 mb-3 transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-0"}`}>
+          HI, I'M
+        </span>
+        <div className={`w-40 h-px bg-cyan-400/40 mx-auto transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-150"}`} />
+        <h1 className={`text-4xl md:text-6xl font-bold text-center transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-350"}`}>
+          {Array.from(name).map((ch, idx) => (
+            <span
+              key={idx}
+              className={`inline-block transition-all duration-500 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[6px]"}`}
+              style={{ transitionDelay: `${idx * 6}ms` }}
+            >
+              {ch === " " ? "\u00A0" : ch}
+            </span>
+          ))}
+        </h1>
+        <p className={`mt-3 text-[11px] md:text-sm tracking-[0.25em] text-zinc-300 text-center max-w-3xl mx-auto transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-550"}`}>
+          FRONTEND DEVELOPER FOCUSED ON SCALABLE ARCHITECTURE, CLEAN STRUCTURE,
+          CLEAR UX AND PERFORMANCE.
+        </p>
+        <Button
+          onClick={handleDownloadCV}
+          className={`duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"} ${isVisible ? "" : "delay-750"} mt-4 pointer-events-auto`}
+        >
+          Download CV
+        </Button>
+      </div>
     </div>
   )
 }
