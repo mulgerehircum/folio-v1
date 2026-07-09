@@ -26,7 +26,7 @@ function Work() {
         >
           <SectionHeader
             title="WORK"
-            description="I'm still early in my career, but I've already worked on real FinTech systems with real complexity."
+            description="I led a full architectural rewrite of a production FinTech platform — from broken legacy to shipped, live, and serving real B2B customers."
           />
         </div>
         <div

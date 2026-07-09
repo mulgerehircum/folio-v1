@@ -10,7 +10,7 @@ function Footer({ onVersionClick }: FooterProps) {
           onClick={onVersionClick} 
           className="md:flex hidden font-medium tracking-wide text-zinc-400 hover:text-zinc-300 transition-colors"
         >
-          © 2025 
+          © {new Date().getFullYear()}
         </button>
       </div>
       <div className="flex items-center gap-4">
