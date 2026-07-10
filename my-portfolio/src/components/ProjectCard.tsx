@@ -15,8 +15,8 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
   const [thumbnailError, setThumbnailError] = useState(false)
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.1, once: false })
 
-  const embedUrl = getYouTubeEmbedUrl(project.videoUrl)
-  const thumbnailUrl = getYouTubeThumbnailUrl(project.videoUrl, thumbnailError ? "hqdefault" : "maxresdefault")
+  const embedUrl = project.videoUrl ? getYouTubeEmbedUrl(project.videoUrl) : null
+  const thumbnailUrl = project.videoUrl ? getYouTubeThumbnailUrl(project.videoUrl, thumbnailError ? "hqdefault" : "maxresdefault") : null
 
   // Auto-load video when card enters viewport (after a small delay)
   useEffect(() => {
@@ -50,8 +50,16 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
       }`}
       aria-label={`Project: ${project.title}`}
     >
-      {/* Video Section */}
+      {/* Video / Screenshot Section */}
       <div className="relative aspect-video mb-4 rounded-lg overflow-hidden bg-zinc-900">
+        {!project.videoUrl && project.screenshotUrl && (
+          <img
+            src={project.screenshotUrl}
+            alt={`${project.title} screenshot`}
+            className="w-full h-full object-cover"
+            loading="lazy"
+          />
+        )}
         {!videoLoaded && thumbnailUrl && (
           <div className="relative w-full h-full cursor-pointer group" onClick={handleThumbnailClick}>
             <img

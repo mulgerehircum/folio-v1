@@ -6,6 +6,11 @@ export interface VersionHistoryItem {
 
 export const versionHistory: VersionHistoryItem[] = [
   {
+    version: "1.2.0",
+    date: "2026-07-10",
+    changes: ["Added PDFloom project"],
+  },
+  {
     version: "1.1.0",
     date: "2025-12-03",
     changes: ["Added Projects section"],

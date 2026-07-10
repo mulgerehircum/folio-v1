@@ -32,7 +32,8 @@ export interface Project {
     title: string
     description: string
     techStack: string[]
-    videoUrl: string
+    videoUrl?: string
+    screenshotUrl?: string
     githubUrl?: string
     liveUrl?: string
 }
@@ -139,6 +140,14 @@ export const projects: Project[] = [
         videoUrl: "https://youtu.be/dnzZCy_sREk",
         githubUrl: "https://github.com/mulgerehircum/ukraine-warmap",
         liveUrl: "https://project-map-ruddy.vercel.app",
+    },
+    {
+        title: "PDFloom",
+        description: "A drag-and-drop PDF template designer: build data-bound layouts with gradients, tables, and charts, then generate PDFs on demand through an API. Includes a public template gallery with cloning and a freemium tier gate.",
+        techStack: ["Vue 3", "TypeScript", "Node.js", "MongoDB", "Vercel"],
+        screenshotUrl: "/pdfloom-screenshot.png",
+        githubUrl: "https://github.com/mulgerehircum/pdfloom-frontend",
+        liveUrl: "https://pdfloom-frontend.vercel.app",
     },
 ]
 
