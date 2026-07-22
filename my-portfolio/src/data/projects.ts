@@ -25,6 +25,8 @@ import {
     SiNetlify,
     SiFirebase,
     SiSupabase,
+    SiNuxtdotjs,
+    SiNestjs,
 } from "react-icons/si"
 import { Code } from "lucide-react"
 
@@ -115,6 +117,10 @@ export const techIconMap: Record<string, IconType> = {
     Netlify: SiNetlify,
     Firebase: SiFirebase,
     Supabase: SiSupabase,
+    Nuxt: SiNuxtdotjs,
+    "Nuxt 3": SiNuxtdotjs,
+    "Nuxt 4": SiNuxtdotjs,
+    NestJS: SiNestjs,
 }
 
 /**
@@ -143,11 +149,18 @@ export const projects: Project[] = [
     },
     {
         title: "PDFloom",
-        description: "A drag-and-drop PDF template designer: build data-bound layouts with gradients, tables, and charts, then generate PDFs on demand through an API. Includes a public template gallery with cloning and a freemium tier gate.",
-        techStack: ["Vue 3", "TypeScript", "Node.js", "MongoDB", "Vercel"],
+        description: "A full-stack drag-and-drop PDF template designer with live data binding: design report layouts visually with gradients, tables, charts, and calculated fields in a Nuxt 4/Vue 3 editor, then generate PDFs on demand from a NestJS/MongoDB API. Free to design in the browser, no account needed to start.",
+        techStack: ["Vue 3", "Nuxt 4", "TypeScript", "NestJS", "MongoDB", "Vercel"],
         screenshotUrl: "/pdfloom-screenshot.png",
         githubUrl: "https://github.com/mulgerehircum/pdfloom-frontend",
         liveUrl: "https://pdfloom-frontend.vercel.app",
+    },
+    {
+        title: "Dataroom",
+        description: "A full-stack virtual data room with nested folders, PDF uploads, real per-user auth, and filename search. Vercel Functions API backed by Neon Postgres via Drizzle, file storage on Vercel Blob, and Clerk-gated auth end to end.",
+        techStack: ["React", "TypeScript", "Tailwind CSS", "PostgreSQL", "Vercel"],
+        githubUrl: "https://github.com/mulgerehircum/dataroom-technical-assessment",
+        liveUrl: "https://tailored-tech-fullstack-technical.vercel.app",
     },
 ]
 
