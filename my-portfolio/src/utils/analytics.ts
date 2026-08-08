@@ -1,11 +1,32 @@
 /**
- * Simple Analytics utility functions for tracking events with metadata
+ * Analytics utility functions. Events currently fire to BOTH Simple Analytics
+ * and Lantern Analytics while the two run side by side.
+ *
+ * - Simple Analytics: `window.sa_event` (loaded via the script tag in
+ *   index.html, with its own metadata collector).
+ * - Lantern: `window.lantern.track` (loaded via /tracker.js, also in
+ *   index.html). Lantern metadata is string/number/boolean only, so the
+ *   wrappers below send curated metadata there rather than forwarding the
+ *   SA-shaped payload verbatim.
  */
 
 declare global {
     interface Window {
         sa_event?: (eventName: string, metadata?: Record<string, string | number | boolean | Date>) => void;
         sa_metadata?: Record<string, string | number | boolean | Date>;
+        lantern?: { track: (name: string, metadata?: Record<string, string | number | boolean>) => void };
+    }
+}
+
+/**
+ * Forward an event to Lantern Analytics. No-op when the tracker isn't loaded.
+ */
+function trackLantern(
+    eventName: string,
+    metadata?: Record<string, string | number | boolean>
+): void {
+    if (typeof window !== "undefined" && window.lantern) {
+        window.lantern.track(eventName, metadata);
     }
 }
 
@@ -44,6 +65,7 @@ export function trackSectionView(sectionId: string): void {
         section_id: sectionId,
         timestamp: new Date(),
     });
+    trackLantern("section_view", { section_id: sectionId });
 }
 
 /**
@@ -55,6 +77,7 @@ export function trackContactClick(platform: string): void {
         platform: platform,
         timestamp: new Date(),
     });
+    trackLantern("contact_click", { platform: platform });
 }
 
 /**
@@ -65,6 +88,7 @@ export function trackCVDownload(): void {
         filename: "CV.pdf",
         timestamp: new Date(),
     });
+    trackLantern("cv_download", { filename: "CV.pdf" });
 }
 
 /**
@@ -78,6 +102,10 @@ export function trackProjectLinkClick(projectTitle: string, linkType: "github" |
         link_type: linkType,
         timestamp: new Date(),
     });
+    trackLantern("project_link_click", {
+        project_title: projectTitle,
+        link_type: linkType,
+    });
 }
 
 /**
@@ -89,5 +117,6 @@ export function trackProjectFilter(tech: string): void {
         tech: tech,
         timestamp: new Date(),
     });
+    trackLantern("project_filter", { tech: tech });
 }
 
