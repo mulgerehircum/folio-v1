@@ -19,6 +19,11 @@ function CursorGold() {
     // Create trail elements
     for (let i = 0; i < trailLength; i++) {
       const cursor = document.createElement("div")
+      // rr-block: excludes this from Lantern Analytics session recording —
+      // 30 elements animated every frame via requestAnimationFrame is a lot
+      // of purely decorative mutation noise (see TriangleMesh.tsx for the
+      // concrete production incident this convention was added to fix).
+      cursor.className = "rr-block"
       const size = 8 - i * 0.15
       const baseOpacity = Math.max(0, 0.5 - i * 0.015)
 

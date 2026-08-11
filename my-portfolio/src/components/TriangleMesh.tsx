@@ -318,5 +318,9 @@ export default function TriangleMesh() {
     }
   }, [])
 
-  return <div ref={containerRef} className="absolute inset-0 z-0 overflow-hidden" />
+  // rr-block: excludes this from Lantern Analytics session recording — it's
+  // a continuously-animating decorative background (requestAnimationFrame,
+  // every frame), which otherwise floods recording with tens of KB of SVG
+  // mutation data per frame and drowns out the actual page content.
+  return <div ref={containerRef} className="rr-block absolute inset-0 z-0 overflow-hidden" />
 }
