@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react"
 import { useInView } from "../hooks/useInView"
-import { ExternalLink, Github, Globe, Play } from "lucide-react"
+import { ExternalLink, Github, Play } from "lucide-react"
 import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl, getTechIcon } from "../data/projects"
 import { trackCardVariantView, trackProjectLinkClick } from "../utils/analytics"
-import { pickCardVariant } from "../utils/experiment"
+import { getExperimentVariant } from "../utils/experiment"
 import type { Project } from "../data/projects"
 
 interface ProjectCardProps {
@@ -16,10 +16,10 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
   const [thumbnailError, setThumbnailError] = useState(false)
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.1, once: false })
 
-  // Assigned once per mount, not re-rolled on re-render. See utils/experiment.ts
-  // for why this is stateless (no sessionStorage/localStorage) rather than sticky.
+  // One variant per page load (see utils/experiment.ts), not per card —
+  // read once on mount and cached, not re-rolled on re-render.
   const isExperimentEligible = Boolean(project.liveEmbeddable && project.videoUrl && project.liveUrl)
-  const [variant] = useState(() => (isExperimentEligible ? pickCardVariant() : "video"))
+  const [variant] = useState(() => (isExperimentEligible ? getExperimentVariant() : "video"))
   const useIframeTreatment = isExperimentEligible && variant === "iframe"
 
   useEffect(() => {
@@ -34,9 +34,12 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
   const embedUrl = project.videoUrl ? getYouTubeEmbedUrl(project.videoUrl) : null
   const thumbnailUrl = project.videoUrl ? getYouTubeThumbnailUrl(project.videoUrl, thumbnailError ? "hqdefault" : "maxresdefault") : null
 
-  // Auto-load video/live-site embed when the card enters viewport (after a small delay)
+  // Auto-load the video when the card enters viewport (after a small delay).
+  // The live-site iframe never auto-loads — click-to-load only, so an
+  // embedded third-party app is never mounted (and its JS bundle never
+  // fetched) unless the visitor actually asks for it.
   useEffect(() => {
-    if (inView && !videoLoaded && (thumbnailUrl || useIframeTreatment)) {
+    if (inView && !videoLoaded && thumbnailUrl && !useIframeTreatment) {
       const timer = setTimeout(() => {
         setVideoLoaded(true)
       }, 500) // Small delay to allow thumbnail to show first
@@ -76,7 +79,11 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
             loading="lazy"
           />
         )}
-        {!useIframeTreatment && !videoLoaded && thumbnailUrl && (
+        {/* Same placeholder regardless of variant — only what loads on click
+            differs (live site vs YouTube embed), never the pre-click UI, so
+            the treatment being tested is purely "what shows up," not "does
+            this look different up front." */}
+        {!videoLoaded && thumbnailUrl && (
           <div className="relative w-full h-full cursor-pointer group" onClick={handleThumbnailClick}>
             <img
               src={thumbnailUrl}
@@ -89,13 +96,6 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
               <div className="w-16 h-16 rounded-full bg-cyan-400/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Play className="w-8 h-8 text-cyan-400 ml-1" fill="currentColor" />
               </div>
-            </div>
-          </div>
-        )}
-        {useIframeTreatment && !videoLoaded && (
-          <div className="relative w-full h-full cursor-pointer group flex items-center justify-center" onClick={handleThumbnailClick}>
-            <div className="w-16 h-16 rounded-full bg-cyan-400/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
-              <Globe className="w-8 h-8 text-cyan-400" />
             </div>
           </div>
         )}
