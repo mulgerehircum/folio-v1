@@ -81,14 +81,17 @@ export function trackContactClick(platform: string): void {
 }
 
 /**
- * Track CV download
+ * Track CV download. No metadata: there's exactly one CV file behind this
+ * button (see Hero.tsx), so a "filename" field would be a compile-time
+ * constant on every single call — zero variance, zero information, and it
+ * showed up as a hollow "insight" in Lantern's AI summaries for exactly
+ * that reason. Revisit if a second CV variant (e.g. a language or
+ * one-page version) is ever added — that's the point where a dimension
+ * here would actually carry signal.
  */
 export function trackCVDownload(): void {
-    trackEvent("cv_download", {
-        filename: "CV.pdf",
-        timestamp: new Date(),
-    });
-    trackLantern("cv_download", { filename: "CV.pdf" });
+    trackEvent("cv_download", { timestamp: new Date() });
+    trackLantern("cv_download");
 }
 
 /**
