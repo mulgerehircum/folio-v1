@@ -38,6 +38,15 @@ export interface Project {
     screenshotUrl?: string
     githubUrl?: string
     liveUrl?: string
+    /**
+     * Eligible for the live-iframe-vs-video A/B test in ProjectCard.
+     * Only set this when the live site is confirmed embeddable — Vercel
+     * doesn't send X-Frame-Options/CSP frame-ancestors by default, but some
+     * projects set their own (e.g. Ukraine War Map sends
+     * `X-Frame-Options: DENY`, which silently blank-frames the card if
+     * flagged here).
+     */
+    liveEmbeddable?: boolean
 }
 
 /**
@@ -138,6 +147,7 @@ export const projects: Project[] = [
         videoUrl: "https://youtu.be/a_s6j_zu4IM",
         githubUrl: "https://github.com/mulgerehircum/winery-landing",
         liveUrl: "https://noire-winery-landing-v1.vercel.app/",
+        liveEmbeddable: true,
     },
     {
         title: "Ukraine War Map",

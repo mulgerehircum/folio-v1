@@ -98,16 +98,43 @@ export function trackCVDownload(): void {
  * Track project link click
  * @param projectTitle - Title of the project
  * @param linkType - Type of link ("github" or "live")
+ * @param variant - A/B card variant shown when this click happened, if the
+ *   project is part of the live-iframe-vs-video experiment (see utils/experiment.ts)
  */
-export function trackProjectLinkClick(projectTitle: string, linkType: "github" | "live"): void {
+export function trackProjectLinkClick(
+    projectTitle: string,
+    linkType: "github" | "live",
+    variant?: string
+): void {
     trackEvent("project_link_click", {
         project_title: projectTitle,
         link_type: linkType,
+        ...(variant ? { variant } : {}),
         timestamp: new Date(),
     });
     trackLantern("project_link_click", {
         project_title: projectTitle,
         link_type: linkType,
+        ...(variant ? { variant } : {}),
+    });
+}
+
+/**
+ * Track which A/B card variant (video vs. live iframe) was shown for a
+ * project — one impression per ProjectCard mount, only for projects opted
+ * into the experiment (see utils/experiment.ts). Paired with
+ * trackProjectLinkClick's `variant` field to compare click-through rate
+ * between variants in the Lantern dashboard.
+ */
+export function trackCardVariantView(projectTitle: string, variant: string): void {
+    trackEvent("card_variant_view", {
+        project_title: projectTitle,
+        variant: variant,
+        timestamp: new Date(),
+    });
+    trackLantern("card_variant_view", {
+        project_title: projectTitle,
+        variant: variant,
     });
 }
 

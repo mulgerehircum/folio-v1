@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react"
 import { useInView } from "../hooks/useInView"
-import { ExternalLink, Github, Play } from "lucide-react"
+import { ExternalLink, Github, Globe, Play } from "lucide-react"
 import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl, getTechIcon } from "../data/projects"
-import { trackProjectLinkClick } from "../utils/analytics"
+import { trackCardVariantView, trackProjectLinkClick } from "../utils/analytics"
+import { pickCardVariant } from "../utils/experiment"
 import type { Project } from "../data/projects"
 
 interface ProjectCardProps {
@@ -15,18 +16,33 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
   const [thumbnailError, setThumbnailError] = useState(false)
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.1, once: false })
 
+  // Assigned once per mount, not re-rolled on re-render. See utils/experiment.ts
+  // for why this is stateless (no sessionStorage/localStorage) rather than sticky.
+  const isExperimentEligible = Boolean(project.liveEmbeddable && project.videoUrl && project.liveUrl)
+  const [variant] = useState(() => (isExperimentEligible ? pickCardVariant() : "video"))
+  const useIframeTreatment = isExperimentEligible && variant === "iframe"
+
+  useEffect(() => {
+    if (isExperimentEligible) {
+      trackCardVariantView(project.title, variant)
+    }
+    // Fires once per mount — project.title/variant/isExperimentEligible don't
+    // change after a card's initial assignment.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const embedUrl = project.videoUrl ? getYouTubeEmbedUrl(project.videoUrl) : null
   const thumbnailUrl = project.videoUrl ? getYouTubeThumbnailUrl(project.videoUrl, thumbnailError ? "hqdefault" : "maxresdefault") : null
 
-  // Auto-load video when card enters viewport (after a small delay)
+  // Auto-load video/live-site embed when the card enters viewport (after a small delay)
   useEffect(() => {
-    if (inView && !videoLoaded && thumbnailUrl) {
+    if (inView && !videoLoaded && (thumbnailUrl || useIframeTreatment)) {
       const timer = setTimeout(() => {
         setVideoLoaded(true)
       }, 500) // Small delay to allow thumbnail to show first
       return () => clearTimeout(timer)
     }
-  }, [inView, videoLoaded, thumbnailUrl])
+  }, [inView, videoLoaded, thumbnailUrl, useIframeTreatment])
 
   const shouldLoadVideo = videoLoaded
 
@@ -39,7 +55,7 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
   }
 
   const handleLinkClick = (linkType: "github" | "live") => {
-    trackProjectLinkClick(project.title, linkType)
+    trackProjectLinkClick(project.title, linkType, isExperimentEligible ? variant : undefined)
   }
 
   return (
@@ -50,7 +66,7 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
       }`}
       aria-label={`Project: ${project.title}`}
     >
-      {/* Video / Screenshot Section */}
+      {/* Video / Screenshot / Live-site Section */}
       <div className="relative aspect-video mb-4 rounded-lg overflow-hidden bg-zinc-900">
         {!project.videoUrl && project.screenshotUrl && (
           <img
@@ -60,7 +76,7 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
             loading="lazy"
           />
         )}
-        {!videoLoaded && thumbnailUrl && (
+        {!useIframeTreatment && !videoLoaded && thumbnailUrl && (
           <div className="relative w-full h-full cursor-pointer group" onClick={handleThumbnailClick}>
             <img
               src={thumbnailUrl}
@@ -76,7 +92,22 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
             </div>
           </div>
         )}
-        {shouldLoadVideo && embedUrl && (
+        {useIframeTreatment && !videoLoaded && (
+          <div className="relative w-full h-full cursor-pointer group flex items-center justify-center" onClick={handleThumbnailClick}>
+            <div className="w-16 h-16 rounded-full bg-cyan-400/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Globe className="w-8 h-8 text-cyan-400" />
+            </div>
+          </div>
+        )}
+        {shouldLoadVideo && useIframeTreatment && project.liveUrl && (
+          <iframe
+            src={project.liveUrl}
+            title={`${project.title} live site`}
+            className="w-full h-full"
+            loading="lazy"
+          />
+        )}
+        {shouldLoadVideo && !useIframeTreatment && embedUrl && (
           <iframe
             src={embedUrl}
             title={`${project.title} video`}
