@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dataroom-demo",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "D:/Pet projects/tailored-tech-fullstack-technical", "run", "dev"],
+      "port": 5173
+    },
+    {
+      "name": "portfolio",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "--port", "5174"],
+      "port": 5174
+    }
+  ]
+}
