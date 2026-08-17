@@ -155,7 +155,12 @@ export const projects: Project[] = [
         techStack: ["Vue 3", "TypeScript", "MapLibre GL", "Three.js", "Vite"],
         videoUrl: "https://youtu.be/dnzZCy_sREk",
         githubUrl: "https://github.com/mulgerehircum/ukraine-warmap",
-        liveUrl: "https://project-map-ruddy.vercel.app",
+        // Current production alias — project-map-ruddy.vercel.app was a
+        // frozen-in-time preview URL that wouldn't have picked up the new
+        // frame-ancestors CSP header below (only the alias tracks the
+        // latest deployment).
+        liveUrl: "https://ukraine-warmap.vercel.app",
+        liveEmbeddable: true,
     },
     {
         title: "PDFloom",

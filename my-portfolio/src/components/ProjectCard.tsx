@@ -4,6 +4,7 @@ import { ExternalLink, Github, Play } from "lucide-react"
 import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl, getTechIcon } from "../data/projects"
 import { trackCardVariantView, trackProjectLinkClick } from "../utils/analytics"
 import { getExperimentVariant } from "../utils/experiment"
+import LiveSiteModal from "./LiveSiteModal"
 import type { Project } from "../data/projects"
 
 interface ProjectCardProps {
@@ -14,6 +15,7 @@ interface ProjectCardProps {
 function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [thumbnailError, setThumbnailError] = useState(false)
+  const [isLiveModalOpen, setIsLiveModalOpen] = useState(false)
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.1, once: false })
 
   // One variant per page load (see utils/experiment.ts), not per card —
@@ -49,7 +51,14 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
 
   const shouldLoadVideo = videoLoaded
 
+  // Live site opens in a modal (a card-sized frame isn't a usable viewport
+  // for most of these projects) rather than swapping the thumbnail out
+  // inline the way the video embed does.
   const handleThumbnailClick = () => {
+    if (useIframeTreatment) {
+      setIsLiveModalOpen(true)
+      return
+    }
     setVideoLoaded(true)
   }
 
@@ -79,10 +88,14 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
             loading="lazy"
           />
         )}
-        {/* Same placeholder regardless of variant — only what loads on click
-            differs (live site vs YouTube embed), never the pre-click UI, so
-            the treatment being tested is purely "what shows up," not "does
-            this look different up front." */}
+        {/* Same placeholder regardless of variant — only what a click does
+            differs (open the live-site modal vs load the YouTube embed
+            inline), never the pre-click UI, so the treatment being tested is
+            purely "what happens," not "does this look different up front."
+            For the iframe variant, videoLoaded never becomes true (see
+            handleThumbnailClick/the auto-load effect above), so this
+            placeholder never goes away — the live site opens in
+            LiveSiteModal below instead of replacing it. */}
         {!videoLoaded && thumbnailUrl && (
           <div className="relative w-full h-full cursor-pointer group" onClick={handleThumbnailClick}>
             <img
@@ -98,14 +111,6 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
               </div>
             </div>
           </div>
-        )}
-        {shouldLoadVideo && useIframeTreatment && project.liveUrl && (
-          <iframe
-            src={project.liveUrl}
-            title={`${project.title} live site`}
-            className="w-full h-full"
-            loading="lazy"
-          />
         )}
         {shouldLoadVideo && !useIframeTreatment && embedUrl && (
           <iframe
@@ -170,6 +175,14 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
           </a>
         )}
       </div>
+      {useIframeTreatment && project.liveUrl && (
+        <LiveSiteModal
+          isOpen={isLiveModalOpen}
+          onClose={() => setIsLiveModalOpen(false)}
+          title={project.title}
+          url={project.liveUrl}
+        />
+      )}
     </div>
   )
 }

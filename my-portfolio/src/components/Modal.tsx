@@ -1,7 +1,15 @@
 import { createPortal } from "react-dom"
 import { useEffect } from "react"
 
-function Modal({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => void; children: React.ReactNode }) {
+interface ModalProps {
+  isOpen: boolean
+  onClose: () => void
+  children: React.ReactNode
+  /** Overrides the default sized/padded container — e.g. for edge-to-edge content like an iframe. */
+  contentClassName?: string
+}
+
+function Modal({ isOpen, onClose, children, contentClassName }: ModalProps) {
     useEffect(() => {
       if (!isOpen) return
   
@@ -35,8 +43,11 @@ function Modal({ isOpen, onClose, children }: { isOpen: boolean; onClose: () => 
           onClick={onClose}
           aria-hidden="true"
         />
-        <div 
-          className="w-full max-w-xl border border-cyan-400/30 bg-zinc-950/40 rounded-xl px-8 py-6 backdrop-blur-sm shadow-[0_0_40px_rgba(0,0,0,0.7)] transition-all duration-400 ease-out"
+        <div
+          className={
+            contentClassName ??
+            "w-full max-w-xl border border-cyan-400/30 bg-zinc-950/40 rounded-xl px-8 py-6 backdrop-blur-sm shadow-[0_0_40px_rgba(0,0,0,0.7)] transition-all duration-400 ease-out"
+          }
           role="dialog"
           aria-modal="true"
         >
