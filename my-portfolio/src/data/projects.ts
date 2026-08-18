@@ -169,6 +169,7 @@ export const projects: Project[] = [
         screenshotUrl: "/pdfloom-screenshot.png",
         githubUrl: "https://github.com/mulgerehircum/pdfloom-frontend",
         liveUrl: "https://pdfloom-frontend.vercel.app",
+        liveEmbeddable: true,
     },
     {
         title: "Dataroom",
@@ -176,7 +177,10 @@ export const projects: Project[] = [
         techStack: ["React", "TypeScript", "Tailwind CSS", "PostgreSQL", "Vercel"],
         screenshotUrl: "/dataroom-screenshot.png",
         githubUrl: "https://github.com/mulgerehircum/dataroom-technical-assessment",
+        // The demo route is sign-in-free and fully interactive, so it's the
+        // one part of this app that's actually worth embedding live.
         liveUrl: "https://tailored-tech-fullstack-technical.vercel.app/demo",
+        liveEmbeddable: true,
     },
 ]
 

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
 import { useInView } from "../hooks/useInView"
-import { ExternalLink, Github, Play } from "lucide-react"
+import { ExternalLink, Github, Maximize2, Play } from "lucide-react"
 import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl, getTechIcon } from "../data/projects"
 import { trackCardVariantView, trackProjectLinkClick } from "../utils/analytics"
 import { getExperimentVariant } from "../utils/experiment"
 import LiveSiteModal from "./LiveSiteModal"
+import ScreenshotLightbox from "./ScreenshotLightbox"
 import type { Project } from "../data/projects"
 
 interface ProjectCardProps {
@@ -16,13 +17,20 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
   const [videoLoaded, setVideoLoaded] = useState(false)
   const [thumbnailError, setThumbnailError] = useState(false)
   const [isLiveModalOpen, setIsLiveModalOpen] = useState(false)
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false)
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.1, once: false })
 
   // One variant per page load (see utils/experiment.ts), not per card —
-  // read once on mount and cached, not re-rolled on re-render.
-  const isExperimentEligible = Boolean(project.liveEmbeddable && project.videoUrl && project.liveUrl)
+  // read once on mount and cached, not re-rolled on re-render. Works for
+  // both video projects (variant flips video <-> iframe) and screenshot-only
+  // projects (variant flips a zoomed screenshot <-> iframe, see
+  // isScreenshotCard below) as long as the project opted in and has a live URL.
+  const isExperimentEligible = Boolean(
+    project.liveEmbeddable && project.liveUrl && (project.videoUrl || project.screenshotUrl)
+  )
   const [variant] = useState(() => (isExperimentEligible ? getExperimentVariant() : "video"))
   const useIframeTreatment = isExperimentEligible && variant === "iframe"
+  const isScreenshotCard = !project.videoUrl && Boolean(project.screenshotUrl)
 
   useEffect(() => {
     if (isExperimentEligible) {
@@ -66,6 +74,17 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
     setThumbnailError(true)
   }
 
+  // Screenshot-only cards have no video to fall back on, so the non-iframe
+  // variant opens a zoomed lightbox instead — keeps "clicking always does
+  // something" true for both variants here too, same as the video cards.
+  const handleScreenshotClick = () => {
+    if (useIframeTreatment) {
+      setIsLiveModalOpen(true)
+      return
+    }
+    setIsLightboxOpen(true)
+  }
+
   const handleLinkClick = (linkType: "github" | "live") => {
     trackProjectLinkClick(project.title, linkType, isExperimentEligible ? variant : undefined)
   }
@@ -80,13 +99,31 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
     >
       {/* Video / Screenshot / Live-site Section */}
       <div className="relative aspect-video mb-4 rounded-lg overflow-hidden bg-zinc-900">
-        {!project.videoUrl && project.screenshotUrl && (
+        {isScreenshotCard && !isExperimentEligible && (
           <img
             src={project.screenshotUrl}
             alt={`${project.title} screenshot`}
             className="w-full h-full object-cover"
             loading="lazy"
           />
+        )}
+        {/* Same rule as the video thumbnail below: identical pre-click UI
+            for both variants — only what the click opens differs (a zoomed
+            screenshot vs the live-site modal). */}
+        {isScreenshotCard && isExperimentEligible && (
+          <div className="relative w-full h-full cursor-pointer group" onClick={handleScreenshotClick}>
+            <img
+              src={project.screenshotUrl}
+              alt={`${project.title} screenshot`}
+              className="w-full h-full object-cover"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
+              <div className="w-16 h-16 rounded-full bg-cyan-400/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Maximize2 className="w-7 h-7 text-cyan-400" />
+              </div>
+            </div>
+          </div>
         )}
         {/* Same placeholder regardless of variant — only what a click does
             differs (open the live-site modal vs load the YouTube embed
@@ -181,6 +218,14 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
           onClose={() => setIsLiveModalOpen(false)}
           title={project.title}
           url={project.liveUrl}
+        />
+      )}
+      {isScreenshotCard && isExperimentEligible && project.screenshotUrl && (
+        <ScreenshotLightbox
+          isOpen={isLightboxOpen}
+          onClose={() => setIsLightboxOpen(false)}
+          title={project.title}
+          imageUrl={project.screenshotUrl}
         />
       )}
     </div>
