@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useInView } from "../hooks/useInView"
 import { ExternalLink, Github, Maximize2, Play } from "lucide-react"
 import { getYouTubeEmbedUrl, getYouTubeThumbnailUrl, getTechIcon } from "../data/projects"
-import { trackCardVariantView, trackProjectLinkClick } from "../utils/analytics"
+import { trackCardVariantView, trackProjectLinkClick, trackIframeExpand } from "../utils/analytics"
 import { getExperimentVariant } from "../utils/experiment"
 import LiveSiteModal from "./LiveSiteModal"
 import ScreenshotLightbox from "./ScreenshotLightbox"
@@ -64,6 +64,7 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
   // inline the way the video embed does.
   const handleThumbnailClick = () => {
     if (useIframeTreatment) {
+      trackIframeExpand(project.title, variant)
       setIsLiveModalOpen(true)
       return
     }
@@ -79,6 +80,7 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
   // something" true for both variants here too, same as the video cards.
   const handleScreenshotClick = () => {
     if (useIframeTreatment) {
+      trackIframeExpand(project.title, variant)
       setIsLiveModalOpen(true)
       return
     }

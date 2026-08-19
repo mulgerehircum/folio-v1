@@ -139,6 +139,24 @@ export function trackCardVariantView(projectTitle: string, variant: string): voi
 }
 
 /**
+ * Track a click that expands the live-site iframe modal (the iframe-variant
+ * thumbnail/screenshot click, as opposed to the "Link" anchor which navigates
+ * away — see ProjectCard.tsx's handleThumbnailClick/handleScreenshotClick).
+ * Only fires for cards on the "iframe" A/B variant (see utils/experiment.ts).
+ */
+export function trackIframeExpand(projectTitle: string, variant: string): void {
+    trackEvent("iframe_expand_click", {
+        project_title: projectTitle,
+        variant: variant,
+        timestamp: new Date(),
+    });
+    trackLantern("iframe_expand_click", {
+        project_title: projectTitle,
+        variant: variant,
+    });
+}
+
+/**
  * Track project filter usage
  * @param tech - Technology name that was filtered
  */
