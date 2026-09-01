@@ -21,9 +21,9 @@ export const contactInfo: ContactItem[] = [
     href: "https://github.com/mulgerehircum",
   },
   {
-    label: "Fiverr",
-    value: "fiverr.com/s/jja64EZ",
-    href: "http://www.fiverr.com/s/jja64EZ",
+    label: "Telegram",
+    value: "t.me/sapphiremantis",
+    href: "https://t.me/sapphiremantis",
   },
 ]
 
