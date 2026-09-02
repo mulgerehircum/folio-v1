@@ -14,6 +14,9 @@ coverage/
 *.tsbuildinfo
 /.vite
 /.cache
+/_cacache
+/_logs
+/_update-notifier-last-checked
 # Logs
 logs
 *.log
