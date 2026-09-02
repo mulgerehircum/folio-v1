@@ -168,3 +168,24 @@ export function trackProjectFilter(tech: string): void {
     trackLantern("project_filter", { tech: tech });
 }
 
+/**
+ * Track hover that replays an Expertise card's icon animation.
+ * Fires on the same interaction that triggers the dissolve-up + refall
+ * (see ExpertiseCard.tsx handleHoverReplay). Kept separate from
+ * Lantern's automatic heatmap click capture so the replay intent is
+ * explicit in the Lantern dashboard.
+ * @param cardTitle - Expertise card title (e.g. "Frontend Foundations")
+ * @param animationType - IconAnimationConfig type (e.g. "heap-drop")
+ */
+export function trackExpertiseIconHover(cardTitle: string, animationType: string): void {
+    trackEvent("expertise_icon_hover", {
+        card_title: cardTitle,
+        animation_type: animationType,
+        timestamp: new Date(),
+    });
+    trackLantern("expertise_icon_hover", {
+        card_title: cardTitle,
+        animation_type: animationType,
+    });
+}
+

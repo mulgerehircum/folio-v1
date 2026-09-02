@@ -1,9 +1,264 @@
 @import "tailwindcss";
 
+/* FLIP heap-drop (ExpertiseCard): the impact squash/rebound transforms
+   run on the Layers icon's individual SVG slices, so each path needs its
+   own fill-box as the transform reference. The default viewBox origin
+   would fling scaled slices off-center. */
+.icon-flip-heap > path {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Scroll-scrubbed heap assembly (progressive enhancement over the WAAPI
+   time-based play). The card element declares a named view() timeline;
+   each slice is bound to it and animates its fall as the card travels
+   through the viewport - assembling bottom-up on the way in and
+   reversing on scroll-back. Driven entirely by the compositor; no JS
+   runs on scroll.
+
+   Stagger is expressed as per-slice animation-range offsets: slices are
+   1st path = top chevron (lands last), 2nd = middle, 3rd = bottom box
+   (lands first). animation-delay is ignored for progress-based
+   timelines, so the ranges ARE the stagger. */
+.icon-heap-card {
+  view-timeline-axis: block;
+  view-timeline-name: --heap-card;
+}
+.icon-heap-scroll > svg > path {
+  animation: icon-heap-scrub linear both;
+  animation-timeline: --heap-card;
+  animation-range: entry 40% entry 75%;
+}
+.icon-heap-scroll > svg > path:nth-child(2) {
+  animation-range: entry 25% entry 60%;
+}
+.icon-heap-scroll > svg > path:nth-child(3) {
+  animation-range: entry 10% entry 45%;
+}
+
+@keyframes icon-heap-scrub {
+  from {
+    transform: translateY(calc(var(--icon-drop, 14px) * -1)) scale(0.9);
+    opacity: 0;
+  }
+  70% {
+    transform: translateY(0) scale(0.98);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-heap-scroll > svg > path {
+    animation: none;
+  }
+}
+
+/* FileBraces: draw the document first, then bring its braces in from
+   opposite sides. The card is the timeline subject so all paths share the
+   same viewport progress. */
+.icon-draw-card {
+  view-timeline-axis: block;
+  view-timeline-name: --icon-draw-card;
+}
+.icon-document-draw > path {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.icon-document-draw > path:nth-child(-n + 2) {
+  stroke-dasharray: var(--draw-length);
+  stroke-dashoffset: var(--draw-length);
+  animation: icon-document-outline-draw linear both;
+  animation-timeline: --icon-draw-card;
+  animation-range: entry 10% entry 45%;
+}
+.icon-document-draw > path:nth-child(3) {
+  animation: icon-brace-from-left linear both;
+  animation-timeline: --icon-draw-card;
+  animation-range: entry 40% entry 75%;
+}
+.icon-document-draw > path:nth-child(4) {
+  animation: icon-brace-from-right linear both;
+  animation-timeline: --icon-draw-card;
+  animation-range: entry 40% entry 75%;
+}
+
+@keyframes icon-document-outline-draw {
+  from {
+    stroke-dashoffset: var(--draw-length);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes icon-brace-from-left {
+  from {
+    transform: translateX(-8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes icon-brace-from-right {
+  from {
+    transform: translateX(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Workflow: upper square falls, connector draws, lower square slides in. */
+.icon-workflow-card {
+  view-timeline-axis: block;
+  view-timeline-name: --icon-workflow-card;
+}
+.icon-workflow-build > rect,
+.icon-workflow-build > path {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.icon-workflow-build > rect:nth-child(1) {
+  animation: icon-workflow-upper-fall linear both;
+  animation-timeline: --icon-workflow-card;
+  animation-range: entry 10% entry 45%;
+}
+.icon-workflow-build > path {
+  stroke-dasharray: var(--workflow-line-length);
+  stroke-dashoffset: var(--workflow-line-length);
+  animation: icon-workflow-line-draw linear both;
+  animation-timeline: --icon-workflow-card;
+  animation-range: entry 25% entry 60%;
+}
+.icon-workflow-build > rect:nth-child(3) {
+  animation: icon-workflow-lower-slide linear both;
+  animation-timeline: --icon-workflow-card;
+  animation-range: entry 40% entry 75%;
+}
+
+@keyframes icon-workflow-upper-fall {
+  from { transform: translateY(-8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes icon-workflow-line-draw {
+  from { stroke-dashoffset: var(--workflow-line-length); }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes icon-workflow-lower-slide {
+  from { transform: translateX(8px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* Simple glyphs slide in as one unit from below. */
+.icon-slide-card {
+  view-timeline-axis: block;
+  view-timeline-name: --icon-slide-card;
+}
+.icon-slide-in {
+  animation: icon-slide-from-bottom linear both;
+  animation-timeline: --icon-slide-card;
+  animation-range: entry 10% entry 75%;
+}
+
+@keyframes icon-slide-from-bottom {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Boxes: top enters from above; lower cubes travel diagonally from their
+  respective bottom corners without rotating their individual strokes. */
+.icon-boxes-card {
+  view-timeline-axis: block;
+  view-timeline-name: --icon-boxes-card;
+}
+.icon-boxes-separate > path {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.icon-boxes-separate > path:nth-child(-n + 4) {
+  animation: icon-box-left-in linear both;
+  animation-timeline: --icon-boxes-card;
+  animation-range: entry 10% entry 30%;
+}
+.icon-boxes-separate > path:nth-child(n + 5):nth-child(-n + 8) {
+  animation: icon-box-right-in linear both;
+  animation-timeline: --icon-boxes-card;
+  animation-range: entry 60% entry 80%;
+}
+.icon-boxes-separate > path:nth-child(n + 9) {
+  animation: icon-box-top-in linear both;
+  animation-timeline: --icon-boxes-card;
+  animation-range: entry 35% entry 55%;
+}
+
+@keyframes icon-box-left-in {
+  from { transform: translate(-10px, 8px); opacity: 0; }
+  to { transform: translate(0) rotate(0); opacity: 1; }
+}
+
+@keyframes icon-box-right-in {
+  from { transform: translate(10px, 8px); opacity: 0; }
+  to { transform: translate(0) rotate(0); opacity: 1; }
+}
+
+@keyframes icon-box-top-in {
+  from { transform: translateY(-12px); opacity: 0; }
+  to { transform: translateY(0) rotate(0); opacity: 1; }
+}
+
+/* Gauge: draw the arc first, then swing the needle from its 12,14 pivot. */
+.icon-gauge-card {
+  view-timeline-axis: block;
+  view-timeline-name: --icon-gauge-card;
+}
+.icon-gauge-speed > path {
+  transform-box: fill-box;
+}
+.icon-gauge-speed > path:nth-child(2) {
+  stroke-dasharray: var(--gauge-arc-length);
+  stroke-dashoffset: var(--gauge-arc-length);
+  animation: icon-gauge-arc-draw linear both;
+  animation-timeline: --icon-gauge-card;
+  animation-range: entry 10% entry 45%;
+}
+.icon-gauge-speed > path:nth-child(1) {
+  transform-origin: 0 100%;
+  transform: var(--gauge-needle-start, rotate(0deg));
+  animation: icon-gauge-needle-speed linear both;
+  animation-timeline: --icon-gauge-card;
+  animation-range: entry 45% entry 100%;
+}
+
+@keyframes icon-gauge-arc-draw {
+  from { stroke-dashoffset: var(--gauge-arc-length); }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes icon-gauge-needle-speed {
+  from { transform: rotate(-165deg); opacity: 1; }
+  to { transform: rotate(0deg); opacity: 1; }
+}
+
 body {
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Helvetica Neue", Arial, sans-serif;
   color: #f3f4f6;
   background-color: #0d0f12;
-  
 }
