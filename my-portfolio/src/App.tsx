@@ -12,7 +12,7 @@ function App() {
       <CursorGold />
       <div className="relative flex flex-col items-center">
         <Background />
-        <div id="about" className="min-h-[calc(100vh-64px)] flex items-center justify-center w-full">
+        <div id="about" className="min-h-[calc(100dvh-64px)] flex items-center justify-center w-full">
           <Hero />
         </div>
         <Expertise />

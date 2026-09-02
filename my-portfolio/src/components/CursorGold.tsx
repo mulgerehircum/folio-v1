@@ -8,7 +8,12 @@ function CursorGold() {
       navigator.maxTouchPoints > 0 ||
       window.innerWidth < 768
 
-    if (isMobile) {
+    // Don't initialize for visitors who prefer reduced motion
+    const prefersReducedMotion =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+
+    if (isMobile || prefersReducedMotion) {
       return
     }
 

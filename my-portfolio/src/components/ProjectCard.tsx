@@ -113,19 +113,24 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
             for both variants — only what the click opens differs (a zoomed
             screenshot vs the live-site modal). */}
         {isScreenshotCard && isExperimentEligible && (
-          <div className="relative w-full h-full cursor-pointer group" onClick={handleScreenshotClick}>
+          <button
+            type="button"
+            onClick={handleScreenshotClick}
+            aria-label={`Zoom ${project.title} screenshot`}
+            className="relative block w-full h-full cursor-pointer group"
+          >
             <img
               src={project.screenshotUrl}
               alt={`${project.title} screenshot`}
               className="w-full h-full object-cover"
               loading="lazy"
             />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
-              <div className="w-16 h-16 rounded-full bg-cyan-400/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
+              <span className="w-16 h-16 rounded-full bg-cyan-400/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Maximize2 className="w-7 h-7 text-cyan-400" />
-              </div>
-            </div>
-          </div>
+              </span>
+            </span>
+          </button>
         )}
         {/* Same placeholder regardless of variant — only what a click does
             differs (open the live-site modal vs load the YouTube embed
@@ -136,7 +141,12 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
             placeholder never goes away — the live site opens in
             LiveSiteModal below instead of replacing it. */}
         {!videoLoaded && thumbnailUrl && (
-          <div className="relative w-full h-full cursor-pointer group" onClick={handleThumbnailClick}>
+          <button
+            type="button"
+            onClick={handleThumbnailClick}
+            aria-label={useIframeTreatment ? `Open ${project.title} live site` : `Play ${project.title} video`}
+            className="relative block w-full h-full cursor-pointer group"
+          >
             <img
               src={thumbnailUrl}
               alt={`${project.title} video thumbnail`}
@@ -144,12 +154,12 @@ function ProjectCard({ project, isFiltered = false }: ProjectCardProps) {
               onError={handleThumbnailError}
               loading="lazy"
             />
-            <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
-              <div className="w-16 h-16 rounded-full bg-cyan-400/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
+            <span className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
+              <span className="w-16 h-16 rounded-full bg-cyan-400/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Play className="w-8 h-8 text-cyan-400 ml-1" fill="currentColor" />
-              </div>
-            </div>
-          </div>
+              </span>
+            </span>
+          </button>
         )}
         {shouldLoadVideo && !useIframeTreatment && embedUrl && (
           <iframe

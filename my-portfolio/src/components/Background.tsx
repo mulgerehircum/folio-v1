@@ -2,7 +2,6 @@ function Background() {
   return (
     <div className="absolute inset-0 w-full h-full -z-10">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(10,70,90,0.45),rgba(0,0,0,0.9))]" />
-      <div className="absolute inset-0 opacity-[0.03] bg-[url('/grid.svg')] bg-center" />
       <svg
         className="pointer-events-none absolute inset-0 w-full h-full opacity-[0.004]"
         viewBox="0 0 100 100"

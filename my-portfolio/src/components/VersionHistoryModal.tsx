@@ -21,7 +21,7 @@ function VersionHistoryModal({ isOpen, onClose }: VersionHistoryModalProps) {
           {versionHistory.map((item, index) => (
             <div key={index} className="border-b border-zinc-700 pb-6 last:border-b-0 last:pb-0">
               <div className="flex items-center justify-between mb-4">
-                <span className="text-xl font-semibold text-[#4DD7FA]">{item.version}</span>
+                <span className="text-xl font-semibold text-cyan-400">{item.version}</span>
                 <span className="text-sm text-zinc-400">{formatDate(item.date)}</span>
               </div>
               <ul className="list-none space-y-2 text-zinc-300 text-base">

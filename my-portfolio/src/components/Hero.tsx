@@ -4,7 +4,7 @@ import { useInView } from "../hooks/useInView"
 import Button from "./Button"
 import TriangleMesh from "./TriangleMesh"
 
-const SUBTITLE = "FRONTEND DEVELOPER FOCUSED ON SCALABLE ARCHITECTURE, CLEAN STRUCTURE, CLEAR UX AND PERFORMANCE."
+const SUBTITLE = "Frontend developer focused on scalable architecture, clean structure, clear UX and performance."
 const TYPEWRITER_START_MS = 1000
 const TYPEWRITER_SPEED_MS = 28
 
@@ -29,6 +29,12 @@ function Hero() {
   }, [inView])
 
   useEffect(() => {
+    // Reduced motion: skip the typewriter effect and show the subtitle whole.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setSubtitleLength(SUBTITLE.length)
+      setTypingDone(true)
+      return
+    }
     let intervalId: ReturnType<typeof setInterval>
     const startId = setTimeout(() => {
       let i = 0
@@ -56,7 +62,7 @@ function Hero() {
   }
 
   return (
-    <div ref={ref} className="relative flex flex-col items-center w-full min-h-[calc(100vh-64px)] justify-center overflow-hidden z-10">
+    <div ref={ref} className="relative flex flex-col items-center w-full min-h-[calc(100dvh-64px)] justify-center overflow-hidden z-10">
       <TriangleMesh />
       <div className="relative z-10 flex flex-col items-center gap-4 w-full py-6 pointer-events-none">
         <span className={`block text-[11px] md:text-xs tracking-[0.3em] text-zinc-300 mb-3 transition-all duration-700 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}>
@@ -74,7 +80,7 @@ function Hero() {
             </span>
           ))}
         </h1>
-        <p className="mt-3 text-[11px] md:text-sm tracking-[0.25em] text-zinc-300 text-center max-w-3xl mx-auto min-h-[2.5em]">
+        <p className="mt-3 text-sm md:text-base text-zinc-300 text-center max-w-xl mx-auto min-h-[2.5em]">
           {SUBTITLE.slice(0, subtitleLength)}
           {!typingDone && subtitleLength > 0 && (
             <span className="animate-pulse text-cyan-400">|</span>

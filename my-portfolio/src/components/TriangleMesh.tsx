@@ -110,6 +110,12 @@ export default function TriangleMesh() {
 
     container.appendChild(svg)
 
+    // Reduced motion: render the mesh once, statically, with no animation
+    // loop, no pointer repulsion, and no click ripples.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return () => container.removeChild(svg)
+    }
+
     let scrollY = 0
     let rotAngle = 0, rotFrom = 0, rotTo = 0, rotStart: number | null = null
     let mouseX = NaN, mouseY = NaN

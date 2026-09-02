@@ -14,12 +14,14 @@ function Root() {
       <Header />
       <App />
       <Footer onVersionClick={() => setIsVersionModalOpen(true)} />
-      <VersionHistoryModal 
-        isOpen={isVersionModalOpen} 
-        onClose={() => setIsVersionModalOpen(false)} 
+      <VersionHistoryModal
+        isOpen={isVersionModalOpen}
+        onClose={() => setIsVersionModalOpen(false)}
       />
     </StrictMode>
   )
 }
+
+export default Root
 
 createRoot(document.getElementById('root')!).render(<Root />)

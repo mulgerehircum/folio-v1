@@ -14,6 +14,7 @@ export function useInView<T extends Element>(
   const { root = null, rootMargin = "0px", threshold = 0.15, once = true } = options
   const ref = useRef<T | null>(null)
   const [inView, setInView] = useState(false)
+  const thresholdKey = JSON.stringify(threshold)
 
   useEffect(() => {
     const element = ref.current
@@ -34,7 +35,7 @@ export function useInView<T extends Element>(
 
     observer.observe(element)
     return () => observer.disconnect()
-  }, [root, rootMargin, JSON.stringify(threshold), once])
+  }, [root, rootMargin, thresholdKey, once])
 
   return { ref, inView }
 }
