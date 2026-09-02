@@ -7,7 +7,7 @@ interface ContactItemProps {
   isLast?: boolean
 }
 
-function ContactItem({ label, value, href }: ContactItemProps) {
+function ContactItem({ label, value, href, isLast = false }: ContactItemProps) {
   const handleClick = () => {
     const platform = label.toLowerCase().replace(/\s+/g, "_")
     trackContactClick(platform)
@@ -16,7 +16,7 @@ function ContactItem({ label, value, href }: ContactItemProps) {
   return (
     <>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-1">
-        <span className="text-zinc-400 uppercase tracking-[0.18em] text-[11px]">
+        <span className="text-zinc-400 text-xs">
           {label}
         </span>
         <a
@@ -24,12 +24,12 @@ function ContactItem({ label, value, href }: ContactItemProps) {
           target={href.startsWith("http") ? "_blank" : undefined}
           rel={href.startsWith("http") ? "noreferrer" : undefined}
           onClick={handleClick}
-          className="text-zinc-100 hover:text-amber-300 transition-colors"
+          className="text-zinc-100 hover:text-cyan-400 transition-colors"
         >
           {value}
         </a>
       </div>
-      {<hr className="h-px w-full text-cyan-400/30" />}
+      {!isLast && <hr className="h-px w-full text-cyan-400/30" />}
     </>
   )
 }

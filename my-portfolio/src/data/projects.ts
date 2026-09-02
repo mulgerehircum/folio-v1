@@ -173,7 +173,7 @@ export const projects: Project[] = [
     },
     {
         title: "Dataroom",
-        description: "A full-stack virtual data room with nested folders, PDF uploads, real per-user auth, and filename search. Vercel Functions API backed by Neon Postgres via Drizzle, file storage on Vercel Blob, and Clerk-gated auth end to end. Try the live demo — no sign-in required.",
+        description: "A full-stack virtual data room with nested folders, PDF uploads, real per-user auth, and filename search. Vercel Functions API backed by Neon Postgres via Drizzle, file storage on Vercel Blob, and Clerk-gated auth end to end. Try the live demo. No sign-in required.",
         techStack: ["React", "TypeScript", "Tailwind CSS", "PostgreSQL", "Vercel"],
         screenshotUrl: "/dataroom-screenshot.png",
         githubUrl: "https://github.com/mulgerehircum/dataroom-technical-assessment",

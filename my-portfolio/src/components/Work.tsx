@@ -1,13 +1,12 @@
 import { useEffect, useRef } from "react"
 import { useInView } from "../hooks/useInView"
 import { Calendar, MapPin } from "lucide-react"
-import SectionHeader from "./SectionHeader"
 import { workExperience } from "../data/work"
 import Section from "./Section"
 import { trackSectionView } from "../utils/analytics"
 
 function Work() {
-  const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.18, once: false })
+  const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.18, once: true })
   const hasTrackedRef = useRef(false)
 
   useEffect(() => {
@@ -18,59 +17,67 @@ function Work() {
   }, [inView])
 
   return (
-    <Section id="work" className="bg-transparent min-h-screen">
+    <Section id="work" className="bg-transparent">
       <div ref={ref} className="max-w-4xl mx-auto w-full px-6 flex flex-col">
         <div
           className={`transition-all duration-500 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[8px]"}`}
-          style={{ transitionDelay: inView ? "0ms" : "0ms" }}
         >
-          <SectionHeader
-            title="WORK"
-            description="I led a full architectural rewrite of a production FinTech platform — from broken legacy to shipped, live, and serving real B2B customers."
-          />
-        </div>
-        <div
-          className={`flex items-center gap-4 px-6 justify-between transition-all duration-400 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[8px]"}`}
-          style={{ transitionDelay: inView ? "0ms" : "120ms" }}
-        >
-          <h2 className="text-lg font-semibold">{workExperience.company}</h2>
-          <span className="text-zinc-400">{workExperience.role}</span>
-        </div>
-        <hr
-          className={`w-full border-cyan-400/30 my-4 transition-all duration-400 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[8px]"}`}
-          style={{ transitionDelay: inView ? "0ms" : "200ms" }}
-        />
-        <div
-          className={`flex items-center gap-4 px-6 text-sm text-zinc-400 transition-all duration-400 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[8px]"}`}
-          style={{ transitionDelay: inView ? "0ms" : "260ms" }}
-        >
-          <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-zinc-400" />
-            <p>{workExperience.period}</p>
+          <h2 className="text-2xl md:text-3xl font-bold text-zinc-100">
+            {workExperience.company}
+          </h2>
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-3 text-sm text-zinc-400">
+            <span>{workExperience.role}</span>
+            <span className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" aria-hidden="true" />
+              {workExperience.period}
+            </span>
+            <span className="flex items-center gap-2">
+              <MapPin className="w-4 h-4" aria-hidden="true" />
+              {workExperience.location}
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-zinc-400" />
-            <p>{workExperience.location}</p>
-          </div>
+          <p className="mt-4 text-zinc-400 max-w-[65ch] text-sm leading-relaxed">
+            I led a full architectural rewrite of a production FinTech platform,
+            from broken legacy to shipped, live, and serving real B2B customers.
+          </p>
         </div>
-        <ul className="space-y-2 text-sm leading-relaxed text-zinc-300 px-6 mt-4">
-          {workExperience.responsibilities.map((responsibility, index) => {
-            const delayMs = 320 + index * 70
+
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-x-10 gap-y-10 md:gap-y-14">
+          {workExperience.responsibilityGroups.map((group, groupIndex) => {
+            const delayMs = 150 + groupIndex * 120
             return (
-              <li
-                key={index}
-                className={`transition-all duration-400 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[8px]"}`}
-                style={{ transitionDelay: inView ? "0ms" : `${delayMs}ms` }}
+              <div
+                key={group.group}
+                className={`contents`}
               >
-                • {responsibility}
-              </li>
+                <div
+                  className={`transition-all duration-400 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[8px]"}`}
+                  style={{ transitionDelay: inView ? `${delayMs}ms` : "0ms" }}
+                >
+                  <h3 className="text-sm font-semibold text-zinc-100">{group.group}</h3>
+                  <div className="w-8 h-px bg-cyan-400/50 mt-3" />
+                </div>
+                <ul
+                  className={`space-y-3 text-sm leading-relaxed text-zinc-300 transition-all duration-400 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[8px]"}`}
+                  style={{ transitionDelay: inView ? `${delayMs + 60}ms` : "0ms" }}
+                >
+                  {group.items.map((item, itemIndex) => (
+                    <li
+                      key={itemIndex}
+                      className={`transition-all duration-400 ease-out ${inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-[8px]"}`}
+                      style={{ transitionDelay: inView ? `${delayMs + 120 + itemIndex * 60}ms` : "0ms" }}
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             )
           })}
-        </ul>
+        </div>
       </div>
     </Section>
   )
 }
 
 export default Work
-
