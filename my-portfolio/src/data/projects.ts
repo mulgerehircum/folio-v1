@@ -39,12 +39,12 @@ export interface Project {
     githubUrl?: string
     liveUrl?: string
     /**
-     * Eligible for the live-iframe-vs-video A/B test in ProjectCard.
-     * Only set this when the live site is confirmed embeddable — Vercel
-     * doesn't send X-Frame-Options/CSP frame-ancestors by default, but some
-     * projects set their own (e.g. Ukraine War Map sends
-     * `X-Frame-Options: DENY`, which silently blank-frames the card if
-     * flagged here).
+     * Makes the card poster clickable: opens the live site in a full-size
+     * modal (see LiveSiteModal.tsx). Only set this when the live site is
+     * confirmed embeddable — Vercel doesn't send X-Frame-Options/CSP
+     * frame-ancestors by default, but some projects set their own (e.g.
+     * Ukraine War Map sends `X-Frame-Options: DENY`, which silently
+     * blank-frames the modal if flagged here).
      */
     liveEmbeddable?: boolean
 }
@@ -66,16 +66,6 @@ export function extractYouTubeVideoId(url: string): string | null {
     }
 
     return null
-}
-
-/**
- * Convert YouTube URL to embed URL with privacy mode
- */
-export function getYouTubeEmbedUrl(videoUrl: string): string | null {
-    const videoId = extractYouTubeVideoId(videoUrl)
-    if (!videoId) return null
-
-    return `https://www.youtube-nocookie.com/embed/${videoId}?rel=0`
 }
 
 /**

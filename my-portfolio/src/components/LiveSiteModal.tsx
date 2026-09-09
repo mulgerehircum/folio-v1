@@ -9,9 +9,9 @@ interface LiveSiteModalProps {
 }
 
 /**
- * Full-size modal for the live-iframe A/B variant (see utils/experiment.ts) —
- * a card-sized inline iframe isn't a usable viewport for most of these sites,
- * so this opens much larger instead of embedding inline in the card.
+ * Full-size modal for a project's live site (opened by the poster click on
+ * embeddable cards — a card-sized inline iframe isn't a usable viewport for
+ * most of these sites, so this opens much larger instead).
  */
 function LiveSiteModal({ isOpen, onClose, title, url }: LiveSiteModalProps) {
   return (
