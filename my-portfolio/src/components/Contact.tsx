@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react"
 import { useInView } from "../hooks/useInView"
 import ContactItem from "./ContactItem"
+import CountryWidget from "./CountryWidget"
 import { contactInfo } from "../data/contact"
 import Section from "./Section"
 import { trackSectionView } from "../utils/analytics"
@@ -55,6 +56,7 @@ function Contact() {
             })}
           </div>
         </div>
+        <CountryWidget />
       </div>
     </Section>
   )
